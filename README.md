@@ -30,33 +30,33 @@ Głównym celem projektu było zidentyfikowanie najbardziej rentownych ścieżek
 
 Zamiast prostego przypisywania kwot, zastosowałem logikę Heurystyki Cenowej w SQL, która automatycznie klasyfikuje transakcje na podstawie ich struktury i wzorców:
 
-    Elite Annual (≥890 PLN): Segment High-Ticket. Klienci o najwyższym LTV, płacący z góry za dostęp roczny.
+Elite Annual (≥890 PLN): Segment High-Ticket. Klienci o najwyższym LTV, płacący z góry za dostęp roczny.
 
-    Classic Monthly: Główne produkty subskrypcyjne (89, 99, 169, 199, 249 PLN). Trzon przychodowy biznesu.
+Classic Monthly: Główne produkty subskrypcyjne (89, 99, 169, 199, 249 PLN). Trzon przychodowy biznesu.
 
-    Trial Starter: Kluczowy lejek akwizycyjny. Wyodrębniony za pomocą logiki:
+Trial Starter: Kluczowy lejek akwizycyjny. Wyodrębniony za pomocą logiki:
 
-        Kwoty wejściowe (<89 PLN)
+Kwoty wejściowe (<89 PLN)
 
-        Niestandardowe końcówki cenowe (np. grosze), identyfikowane przez operator modulo (%) i analizę tekstu, wskazujące na dynamiczne zniżki procentowe.
+Niestandardowe końcówki cenowe (np. grosze), identyfikowane przez operator modulo (%) i analizę tekstu, wskazujące na dynamiczne zniżki procentowe.
 
-    Smart Saver & Basic Access: Pakiety wielomiesięczne oraz transakcje uzupełniające.
+Smart Saver & Basic Access: Pakiety wielomiesięczne oraz transakcje uzupełniające.
 
 📈 Kluczowe Funkcje Modelu Danych
 
 W celu uzyskania prawdziwego obrazu lojalności, model SQL został wzbogacony o:
 
-    Logikę Entry Segment: Przy wykorzystaniu funkcji okna FIRST_VALUE, każdy klient jest analizowany przez pryzmat swojej "ceny wejścia". Zapobiega to błędom w wykresach retencji, gdzie migracja klienta do droższego planu byłaby błędnie interpretowana jako odejście (churn).
+Logikę Entry Segment: Przy wykorzystaniu funkcji okna FIRST_VALUE, każdy klient jest analizowany przez pryzmat swojej "ceny wejścia". Zapobiega to błędom w wykresach retencji, gdzie migracja klienta do droższego planu byłaby błędnie interpretowana jako odejście (churn).
 
-    Analizę Kohortową: Dynamiczne obliczanie month_number dla każdej transakcji, co pozwoliło na stworzenie macierzy retencji monitorującej stabilność bazy użytkowników w czasie.
+Analizę Kohortową: Dynamiczne obliczanie month_number dla każdej transakcji, co pozwoliło na stworzenie macierzy retencji monitorującej stabilność bazy użytkowników w czasie.
 
 💡 Główne Wnioski Biznesowe
 
-    Paradoks Trial Startera: Analiza wykazała, że segment promocyjny, mimo najniższej bazy wejściowej, generuje najwyższą retencję długoterminową. Strategia "taniego wejścia" skutecznie buduje lojalnych subskrybentów.
+Paradoks Trial Startera: Analiza wykazała, że segment promocyjny, mimo najniższej bazy wejściowej, generuje najwyższą retencję długoterminową. Strategia "taniego wejścia" skutecznie buduje lojalnych subskrybentów.
 
-    Stabilizacja Retencji: Punkt krytyczny przypada na 3-4 miesiąc. Użytkownicy, którzy przejdą ten próg, wykazują wysoką stabilność płatniczą (retencja na poziomie ~30%).
+Stabilizacja Retencji: Punkt krytyczny przypada na 3-4 miesiąc. Użytkownicy, którzy przejdą ten próg, wykazują wysoką stabilność płatniczą (retencja na poziomie ~30%).
 
-    Optymalizacja Przychodów: Największy potencjał do optymalizacji cenowej leży w segmencie Classic Monthly ze względu na jego skalę i odporność na jednostkowe odejścia.
+Optymalizacja Przychodów: Największy potencjał do optymalizacji cenowej leży w segmencie Classic Monthly ze względu na jego skalę i odporność na jednostkowe odejścia.
 
 📂 Repository Structure
 
