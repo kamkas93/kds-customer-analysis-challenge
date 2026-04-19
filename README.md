@@ -18,11 +18,11 @@ W tej fazie surowe dane zostały ustrukturyzowane i wzbogacone o zaawansowaną l
 
     Price Heuristics: Autorski algorytm klasyfikacji transakcji:
 
-        Elite Annual (≥890 PLN): Segment Premium.
-
-        Classic Monthly: Trzon przychodowy (produkty 89-249 PLN).
-
-        Trial Starter: Identyfikacja za pomocą operacji modulo (%) i analizy wzorców (promocje/zniżki).
+        Elite Annual: Najwyższy pakiet (wpłaty ≥ 890 zł).
+        Smart Saver: Średnia półka cenowa (od 250 zł do 889 zł).
+        Classic Monthly: Standardowe abonamenty miesięczne (np. 99, 169, 199 zł).
+        Basic Access: Pozostałe subskrypcje niezaklasyfikowane do głównych grup.
+        Trial Starter: Najniższy próg wejścia (< 89 zł) lub niestandardowe kwoty promocyjne (wykrywane algorytmicznie).
 
     Entry Segment Logic: Wykorzystanie FIRST_VALUE, aby "zamrozić" punkt wejścia klienta i poprawnie liczyć retencję po upgrade'ach.
 
