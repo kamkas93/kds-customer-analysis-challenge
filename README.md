@@ -55,6 +55,8 @@ Kluczowe Funkcjonalności:
     │   └── 02_Cohort_Analysis_and_Segmentation.sql   # Zaawansowana logika kohortowa i LTV
     ├── /PowerBI
     │   └── KDS_Dashboard.pbix                        # Plik raportu Power BI
-    ├── /Screenshots
-    │   └── Dashboard_Preview.png                     # Podgląd finalnego narzędzia
+    ├── /screenshots
+    │   └── dashboard.png                             # Podgląd finalnego narzędzia
+    │   └── legenda.png                               # Podgląd okna
+    │   └── słownik.png                               # Podgląd słownika (bookmark)
     └── README.md
