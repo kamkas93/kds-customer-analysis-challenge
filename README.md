@@ -50,10 +50,10 @@ Kluczowe Funkcjonalności:
 📂 Repository Structure
 
     ├── /SQL
-    │   ├── 01_Data_Cleaning.sql        # Skrypty ETL i przygotowanie tabel
-    │   └── 02_Segmentation_Logic.sql   # Zaawansowana logika kohortowa i LTV
+    │   ├── 01_Data_Cleaning.sql                      # Skrypty ETL i przygotowanie tabel
+    │   └── 02_Cohort_Analysis_and_Segmentation.sql   # Zaawansowana logika kohortowa i LTV
     ├── /PowerBI
-    │   └── KDS_Dashboard.pbix          # Plik raportu Power BI
+    │   └── KDS_Dashboard.pbix                        # Plik raportu Power BI
     ├── /Screenshots
-    │   └── Dashboard_Preview.png       # Podgląd finalnego narzędzia
+    │   └── Dashboard_Preview.png                     # Podgląd finalnego narzędzia
     └── README.md
