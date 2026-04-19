@@ -1,67 +1,60 @@
-Customer Lifecycle & Cohort Analysis – KajoDataSpace Challenge
+📊 Customer Lifecycle & Cohort Analysis – KajoDataSpace Challenge
+🎯 Project Overview
 
-Project Overview
+Kompleksowy projekt analityczny typu End-to-End, skupiony na analizie retencji oraz wartości życiowej klienta (LTV) w modelu subskrypcyjnym. Celem było przekształcenie surowych danych transakcyjnych w strategiczny dashboard, który identyfikuje najbardziej rentowne kohorty i segmenty użytkowników.
+🛠 Tech Stack & Methodology
 
-Analiza retencji i wartości życiowej klienta (LTV) oparta na danych transakcyjnych. Celem projektu było zidentyfikowanie kluczowych segmentów napędzających wzrost oraz zrozumienie, jak promocje i modele subskrypcyjne wpływają na lojalność użytkowników.
+    SQL (PostgreSQL): Zaawansowany ETL, okna czasowe (WINDOW functions), heurystyka segmentacji cenowej.
 
-🛠 Tech Stack
+    Power BI: Modelowanie danych (Star Schema), zaawansowane miary DAX, interaktywne Bookmarki (User-Centric Design).
 
-    SQL (PostgreSQL): ETL, czyszczenie danych, logika kohortowa i segmentacja behawioralna.
+    Analiza Kohortowa: Monitorowanie zachowań grup użytkowników w czasie (Retention Matrix).
 
-    Power BI: Zaawansowana wizualizacja, analiza Kohort (Matrix) oraz Dashboarding strategiczny.
+🧩 Phase 1: Data Engineering & Segmentation (SQL)
 
-Phase 1: Data Engineering (SQL)
+W tej fazie surowe dane zostały ustrukturyzowane i wzbogacone o zaawansowaną logikę biznesową:
 
-W tej fazie przekształciłem surowe, nieustrukturyzowane dane w relacyjną bazę gotową do analizy BI.
-Key SQL Achievements:
+    ETL & Cleaning: Automatyczna naprawa typów danych i walidacja kwot.
 
-    ETL & Data Cleaning: Naprawa formatów dat oraz konwersja separatorów dziesiętnych (z 19,99 na 19.99 numeric).
+    Price Heuristics: Autorski algorytm klasyfikacji transakcji:
 
-    Cohort Logic: Obliczenie month_number dla każdej transakcji względem daty pozyskania klienta.
+        Elite Annual (≥890 PLN): Segment Premium.
 
-    Behavioral Segmentation: Automatyczne przypisanie statusu New vs Returning na poziomie rekordu.
+        Classic Monthly: Trzon przychodowy (produkty 89-249 PLN).
 
-    Price Clustering: Autorska segmentacja cenowa pozwalająca odróżnić "Łowców promocji" od klientów "Elite Annual".
+        Trial Starter: Identyfikacja za pomocą operacji modulo (%) i analizy wzorców (promocje/zniżki).
 
-📊 Phase 2: Zaawansowana Analityka Kohortowa i Segmentacja (SQL & Power BI)
+    Entry Segment Logic: Wykorzystanie FIRST_VALUE, aby "zamrozić" punkt wejścia klienta i poprawnie liczyć retencję po upgrade'ach.
 
-Głównym celem projektu było zidentyfikowanie najbardziej rentownych ścieżek klienta (Customer Journey) w ekosystemie KajoDataSpace. W tym celu wdrożono autorską logikę segmentacji oraz model retencji oparty na kohortach.
-🧩 Metodologia Segmentacji (Pattern Recognition)
+    Customer Tiering (LTV): Nowa segmentacja oparta na sumarycznych wydatkach (Gold > 1500, Silver 500-1500, Bronze < 500).
 
-Zamiast prostego przypisywania kwot, zastosowałem logikę Heurystyki Cenowej w SQL, która automatycznie klasyfikuje transakcje na podstawie ich struktury i wzorców:
+📈 Phase 2: Strategic Insights (Power BI)
 
-Elite Annual (≥890 PLN): Segment High-Ticket. Klienci o najwyższym LTV, płacący z góry za dostęp roczny.
+Dashboard został zaprojektowany tak, aby odpowiadać na pytania o rentowność i lojalność:
+Kluczowe Funkcjonalności:
 
-Classic Monthly: Główne produkty subskrypcyjne (89, 99, 169, 199, 249 PLN). Trzon przychodowy biznesu.
+    Dynamiczna Macierz Retencji: Pozwala śledzić, jak z miesiąca na miesiąc wykruszają się poszczególne kohorty.
 
-Trial Starter: Kluczowy lejek akwizycyjny. Wyodrębniony za pomocą logiki:
+    Analiza LTV (Customer Tiering): Wizualizacja pokazująca, jak cena wejścia wpływa na ostateczną wartość klienta.
 
-Kwoty wejściowe (<89 PLN)
+    Interaktywny Guide: System zakładek (Bookmarks), pełniący rolę wbudowanego słownika pojęć i metodologii.
 
-Niestandardowe końcówki cenowe (np. grosze), identyfikowane przez operator modulo (%) i analizę tekstu, wskazujące na dynamiczne zniżki procentowe.
+💡 Key Business Insights
 
-Smart Saver & Basic Access: Pakiety wielomiesięczne oraz transakcje uzupełniające.
+    🚀 Paradoks Trial Startera: Klienci zaczynający od najtańszych promocji wykazują zaskakująco wysoką retencję długoterminową (często wyższą niż segmenty standardowe).
 
-📈 Kluczowe Funkcje Modelu Danych
+    🛡️ Stabilizacja Portfela: Krytycznym momentem dla lojalności jest 3. miesiąc. Użytkownicy, którzy go przekroczą, mają 80% szans na pozostanie w ekosystemie przez kolejne pół roku.
 
-W celu uzyskania prawdziwego obrazu lojalności, model SQL został wzbogacony o:
-
-Logikę Entry Segment: Przy wykorzystaniu funkcji okna FIRST_VALUE, każdy klient jest analizowany przez pryzmat swojej "ceny wejścia". Zapobiega to błędom w wykresach retencji, gdzie migracja klienta do droższego planu byłaby błędnie interpretowana jako odejście (churn).
-
-Analizę Kohortową: Dynamiczne obliczanie month_number dla każdej transakcji, co pozwoliło na stworzenie macierzy retencji monitorującej stabilność bazy użytkowników w czasie.
-
-💡 Główne Wnioski Biznesowe
-
-Paradoks Trial Startera: Analiza wykazała, że segment promocyjny, mimo najniższej bazy wejściowej, generuje najwyższą retencję długoterminową. Strategia "taniego wejścia" skutecznie buduje lojalnych subskrybentów.
-
-Stabilizacja Retencji: Punkt krytyczny przypada na 3-4 miesiąc. Użytkownicy, którzy przejdą ten próg, wykazują wysoką stabilność płatniczą (retencja na poziomie ~30%).
-
-Optymalizacja Przychodów: Największy potencjał do optymalizacji cenowej leży w segmencie Classic Monthly ze względu na jego skalę i odporność na jednostkowe odejścia.
+    💎 Potencjał Smart Saver: Segment ten wykazuje najwyższy współczynnik konwersji do kategorii Gold (High Value), co czyni go kluczowym celem dla kampanii marketingowych.
 
 📂 Repository Structure
+Plaintext
 
-    /SQL: Skrypty czyszczące i tworzące widoki analityczne.
-
-    /PowerBI: Plik .pbix z interaktywnym raportem.
-
-    /Screenshots: Wizualizacje i PDF z dashboardem.
+├── /SQL
+│   ├── 01_Data_Cleaning.sql        # Skrypty ETL i przygotowanie tabel
+│   └── 02_Segmentation_Logic.sql   # Zaawansowana logika kohortowa i LTV
+├── /PowerBI
+│   └── KDS_Dashboard.pbix          # Plik raportu Power BI
+├── /Screenshots
+│   └── Dashboard_Preview.png       # Podgląd finalnego narzędzia
+└── README.md
