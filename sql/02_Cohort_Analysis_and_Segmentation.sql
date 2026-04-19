@@ -2,13 +2,13 @@
 -- PROJECT: KajoDataSpace Customer Lifecycle Challenge
 -- SCRIPT: 02_Cohort_Analysis_and_Segmentation
 -- DATABASE: PostgreSQL
--- GOAL: Advanced ETL process for Power BI: Cohort creation & Price Segmentation
+-- GOAL: Advanced ETL: Cohort creation, Price Segmentation & LTV Tiering
 --------------------------------------------------------------------------------
 
 -- 1. Create Final Analytical Table
 -- -----------------------------------------------------------------------------
--- This table serves as the primary data source for Power BI Dashboard.
--- It combines transactional data with calculated cohort indices and behavioral segments.
+-- This table is the "Single Source of Truth" for the Power BI Dashboard.
+-- It integrates transaction data with behavioral cohorting and LTV segmentation.
 
 DROP TABLE IF EXISTS kds_final_data;
 
@@ -21,7 +21,9 @@ WITH ranked_transactions AS (
         -- Sequence of purchases to distinguish Acquisition (New) from Retention (Returning)
         ROW_NUMBER() OVER(PARTITION BY customer ORDER BY t_date ASC, amount DESC) AS trans_rank,
         -- Global acquisition date for each customer
-        MIN(t_date) OVER(PARTITION BY customer) AS first_transaction_date
+        MIN(t_date) OVER(PARTITION BY customer) AS first_transaction_date,
+        -- Calculating Total Lifetime Spend per customer for Tiering
+        SUM(amount) OVER(PARTITION BY customer) AS total_customer_spend
     FROM kds_transactions_cleaned 
 )
 SELECT 
@@ -31,7 +33,7 @@ SELECT
     transaction_date,
     DATE_TRUNC('month', transaction_date)::DATE AS transaction_month,
     
-    -- MONTH INDEX: Calculating the age of a customer in months (Key for Retention Matrix)
+    -- MONTH INDEX: Calculating customer age in months (Crucial for Retention Matrix)
     (EXTRACT(YEAR FROM AGE(DATE_TRUNC('month', transaction_date)::DATE, 
                            DATE_TRUNC('month', first_transaction_date)::DATE)) * 12 +
      EXTRACT(MONTH FROM AGE(DATE_TRUNC('month', transaction_date)::DATE, 
@@ -39,15 +41,14 @@ SELECT
     
     amount,
     
-    -- CUSTOMER SEGMENT: Defines the lifecycle stage of a given transaction
+    -- CUSTOMER LIFECYCLE SEGMENT
     CASE 
         WHEN trans_rank = 1 THEN 'New'
         ELSE 'Returning'
     END AS customer_segment,
     
-    /* PRICE SEGMENTATION (Transaction Level):
-       Logic based on price point distribution analysis. 
-       Identifies current product tier for each transaction.
+    /* 1. PRICE SEGMENTATION (Transaction Level):
+       Identifies the product tier of each individual payment. 
     */
     CASE 
         WHEN amount >= 890 THEN 'Elite Annual'
@@ -59,9 +60,8 @@ SELECT
         ELSE 'Basic Access'
     END AS price_segment,
 
-    /* ENTRY SEGMENT (Customer Level - KEY FOR RETENTION):
-       Freezes the segment of the FIRST transaction using FIRST_VALUE.
-       Ensures retention lines in Dashboard don't break when a customer upgrades their plan.
+    /* 2. ENTRY SEGMENT (Customer Level):
+       Freezes the starting plan. Used to track cohort behavior regardless of later upgrades.
     */
     FIRST_VALUE(
         CASE 
@@ -73,45 +73,54 @@ SELECT
             WHEN amount >= 250 AND amount < 890 THEN 'Smart Saver'
             ELSE 'Basic Access'
         END
-    ) OVER(PARTITION BY customer_id ORDER BY transaction_date ASC) AS entry_segment
+    ) OVER(PARTITION BY customer_id ORDER BY transaction_date ASC) AS entry_segment,
+
+    /* 3. CUSTOMER TIER (LTV Segmentation):
+       Categorizes customers by total lifetime contribution.
+    */
+    CASE 
+        WHEN total_customer_spend > 1500 THEN 'Gold (High Value)'
+        WHEN total_customer_spend BETWEEN 500 AND 1500 THEN 'Silver (Medium Value)'
+        ELSE 'Bronze (Low Value)'
+    END AS customer_tier
 
 FROM ranked_transactions;
 
 
--- 2. Business Intelligence Queries (Audit & Exploratory)
+-- 2. Business Intelligence Queries (Audit & Validation)
 -- -----------------------------------------------------------------------------
 
--- Frequency analysis to identify pricing trends and promo effectiveness
+-- Analyzing price frequency to detect promos and pricing updates
 SELECT 
     amount, 
-    COUNT(*) AS frequency, 
+    COUNT(*) AS how_often, 
     MIN(transaction_date) AS first_seen, 
     MAX(transaction_date) AS last_seen
-FROM kds_final_data
+FROM kds_transactions_cleaned
 GROUP BY amount
-ORDER BY frequency DESC;
+ORDER BY how_often DESC;
 
--- Segment validation: Checking if logic correctly captures the price ranges
+-- Segment Validation: Checking price distribution per segment
 SELECT 
     price_segment, 
-    MIN(amount) AS min_amount, 
-    MAX(amount) AS max_amount, 
-    ROUND(AVG(amount), 2) AS avg_amount, 
-    COUNT(DISTINCT amount) AS unique_price_points
+    MIN(amount) AS min_val, 
+    MAX(amount) AS max_val, 
+    ROUND(AVG(amount), 2) AS avg_val, 
+    COUNT(DISTINCT amount) AS unique_prices
 FROM kds_final_data
 GROUP BY price_segment
-ORDER BY avg_amount DESC;
+ORDER BY avg_val DESC;
 
 
 -- 3. Data Integrity & Quality Checks
 -- -----------------------------------------------------------------------------
 
--- Row count verification (should match source table)
+-- Verify row count consistency
 SELECT 
     (SELECT COUNT(*) FROM kds_final_data) AS final_rows,
     (SELECT COUNT(*) FROM kds_transactions_cleaned) AS source_rows;
 
--- Sanity check: 'New' customers should strictly appear in month_number 0
+-- Ensure 'New' segment only exists in the acquisition month (Month 0)
 SELECT DISTINCT customer_segment, month_number 
 FROM kds_final_data 
 WHERE customer_segment = 'New'
