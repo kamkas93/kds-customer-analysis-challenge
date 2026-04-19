@@ -48,13 +48,12 @@ Kluczowe Funkcjonalności:
     💎 Potencjał Smart Saver: Segment ten wykazuje najwyższy współczynnik konwersji do kategorii Gold (High Value), co czyni go kluczowym celem dla kampanii marketingowych.
 
 📂 Repository Structure
-Plaintext
 
-├── /SQL
-│   ├── 01_Data_Cleaning.sql        # Skrypty ETL i przygotowanie tabel
-│   └── 02_Segmentation_Logic.sql   # Zaawansowana logika kohortowa i LTV
-├── /PowerBI
-│   └── KDS_Dashboard.pbix          # Plik raportu Power BI
-├── /Screenshots
-│   └── Dashboard_Preview.png       # Podgląd finalnego narzędzia
-└── README.md
+    ├── /SQL
+    │   ├── 01_Data_Cleaning.sql        # Skrypty ETL i przygotowanie tabel
+    │   └── 02_Segmentation_Logic.sql   # Zaawansowana logika kohortowa i LTV
+    ├── /PowerBI
+    │   └── KDS_Dashboard.pbix          # Plik raportu Power BI
+    ├── /Screenshots
+    │   └── Dashboard_Preview.png       # Podgląd finalnego narzędzia
+    └── README.md
