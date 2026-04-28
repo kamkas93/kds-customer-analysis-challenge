@@ -15,38 +15,39 @@ Kompleksowy projekt analityczny typu End-to-End, skupiony na analizie retencji o
 
 W tej fazie surowe dane zostały ustrukturyzowane i wzbogacone o zaawansowaną logikę biznesową:
 
-    ETL & Cleaning: Automatyczna naprawa typów danych i walidacja kwot.
+ETL & Cleaning: Automatyczna naprawa typów danych i walidacja kwot.
 
-    Price Heuristics: Autorski algorytm klasyfikacji transakcji:
+Price Heuristics: Autorski algorytm klasyfikacji transakcji:
 
-        Elite Annual: Najwyższy pakiet (wpłaty ≥ 890 zł).
-        Smart Saver: Średnia półka cenowa (od 250 zł do 889 zł).
-        Classic Monthly: Standardowe abonamenty miesięczne (np. 99, 169, 199 zł).
-        Basic Access: Pozostałe subskrypcje niezaklasyfikowane do głównych grup.
-        Trial Starter: Najniższy próg wejścia (< 89 zł) lub niestandardowe kwoty promocyjne (wykrywane algorytmicznie).
+    Elite Annual: Najwyższy pakiet (wpłaty ≥ 890 zł).
+    Smart Saver: Średnia półka cenowa (od 250 zł do 889 zł).
+    Classic Monthly: Standardowe abonamenty miesięczne (np. 99, 169, 199 zł).
+    Basic Access: Pozostałe subskrypcje niezaklasyfikowane do głównych grup.
+    Trial Starter: Najniższy próg wejścia (< 89 zł) lub niestandardowe kwoty promocyjne (wykrywane algorytmicznie).
 
-    Entry Segment Logic: Wykorzystanie FIRST_VALUE, aby "zamrozić" punkt wejścia klienta i poprawnie liczyć retencję po upgrade'ach.
+Entry Segment Logic: Wykorzystanie FIRST_VALUE, aby "zamrozić" punkt wejścia klienta i poprawnie liczyć retencję po upgrade'ach.
 
-    Customer Tiering (LTV): Nowa segmentacja oparta na sumarycznych wydatkach (Gold > 1500, Silver 500-1500, Bronze < 500).
+Customer Tiering (LTV): Nowa segmentacja oparta na sumarycznych wydatkach (Gold > 1500, Silver 500-1500, Bronze < 500).
 
 📈 Phase 2: Strategic Insights (Power BI)
 
-Dashboard został zaprojektowany tak, aby odpowiadać na pytania o rentowność i lojalność:
+Dashboard został zaprojektowany tak, aby odpowiadać na pytania o rentowność i lojalność
+
 Kluczowe Funkcjonalności:
 
-    Dynamiczna Macierz Retencji: Pozwala śledzić, jak z miesiąca na miesiąc wykruszają się poszczególne kohorty.
+1. Dynamiczna Macierz Retencji: Pozwala śledzić, jak z miesiąca na miesiąc wykruszają się poszczególne kohorty.
 
-    Analiza LTV (Customer Tiering): Wizualizacja pokazująca, jak cena wejścia wpływa na ostateczną wartość klienta.
+2. Analiza LTV (Customer Tiering): Wizualizacja pokazująca, jak cena wejścia wpływa na ostateczną wartość klienta.
 
-    Interaktywny Guide: System zakładek (Bookmarks), pełniący rolę wbudowanego słownika pojęć i metodologii.
+3. Interaktywny Guide: System zakładek (Bookmarks), pełniący rolę wbudowanego słownika pojęć i metodologii.
 
 💡 Key Business Insights
 
-    🚀 Paradoks Trial Startera: Klienci zaczynający od najtańszych promocji wykazują zaskakująco wysoką retencję długoterminową (często wyższą niż segmenty standardowe).
+🚀 Paradoks Trial Startera: Klienci zaczynający od najtańszych promocji wykazują zaskakująco wysoką retencję długoterminową (często wyższą niż segmenty standardowe).
 
-    🛡️ Stabilizacja Portfela: Krytycznym momentem dla lojalności jest 3. miesiąc. Użytkownicy, którzy go przekroczą, mają 80% szans na pozostanie w ekosystemie przez kolejne pół roku.
+🛡️ Stabilizacja Portfela: Krytycznym momentem dla lojalności jest 3. miesiąc. Użytkownicy, którzy go przekroczą, mają 80% szans na pozostanie w ekosystemie przez kolejne pół roku.
 
-    💎 Potencjał Smart Saver: Segment ten wykazuje najwyższy współczynnik konwersji do kategorii Gold (High Value), co czyni go kluczowym celem dla kampanii marketingowych.
+💎 Potencjał Smart Saver: Segment ten wykazuje najwyższy współczynnik konwersji do kategorii Gold (High Value), co czyni go kluczowym celem dla kampanii marketingowych.
 
 📂 Repository Structure
 
